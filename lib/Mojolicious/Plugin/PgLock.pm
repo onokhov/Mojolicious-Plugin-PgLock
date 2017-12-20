@@ -7,15 +7,16 @@ our $VERSION = "0.01";
 
 sub register {
     my( $plugin, $app, $conf ) =  @_;
-    $app->helper( get_lock => \&get_lock  );
+    $app->helper( get_lock => sub { push @_, $conf->{pg}; &get_lock }  );
 }
 
 sub get_lock {
     my $self = shift;
+    my $pg   = pop;
     my $params = @_ % 2 ? $_[0] : { @_ };
     $params->{app} = $self->app;
-    $params->{db}  = $self->app->pg->db;
-    $params->{name} //= ( caller(1) )[0];
+    $params->{db}  = $pg->db;
+    $params->{name} //= ( caller(2) )[0];
     my $sentinel = Mojolicious::Plugin::PgLock::Sentinel->new($params);
     return $sentinel->lock;
 }
@@ -28,11 +29,12 @@ __END__
 
 =head1 NAME
 
-Mojolicious::Plugin::PgLock -  get_lock helper for Mojolicious application
+Mojolicious::Plugin::PgLock - postgres advisory locks for Mojolicious application
 
 =head1 SYNOPSIS
 
-  $app->plugin('PgLock');
+  my $pg = Mojo::Pg->new('postgresql://...');
+  $app->plugin( PgLock => { pg => $pg } );
 
   if ( my $lock = $app->get_lock ) {
     # make something exclusively
@@ -40,12 +42,12 @@ Mojolicious::Plugin::PgLock -  get_lock helper for Mojolicious application
 
 =head1 DESCRIPTION
 
-Mojolicious::Plugin::PgLock implements get_lock helper
-
+Mojolicious::Plugin::PgLock implements get_lock helper. It is a shugar for
+L<postgres advisory lock functions|https://www.postgresql.org/docs/current/static/functions-admin.html#FUNCTIONS-ADVISORY-LOCKS>.
 
 =head1 HELPERS
-L<Mojolicious::Plugin::PgLock> implements the following helper.
 
+L<Mojolicious::Plugin::PgLock> implements the following helper.
 
 =head2 get_lock
 
@@ -58,15 +60,35 @@ L<Mojolicious::Plugin::PgLock> implements the following helper.
   # use explicit id and wait until a lock is granted
   my $lock = $app->get_lock( id => 9874738, wait => 1 );
 
-E<get_lock> helper uses one of 'pg_try_advisory_lock', 'pg_advisory_lock',
-and their shared siblings to get an exclusive or shared lock.
-The E<id> parameter is used as argument for these functions. If E<id>
-is not defined then it is calculated as CRC32 hash from E<name> parameter.
-If E<name> is not defined then PACKAGE of the caller is used as E<name>.
-It allows to use E<get_helper> without parameters in Mojolicious::Command modules.
+C<get_lock> helper uses one of postgres advisory lock function C<pg_try_advisory_lock>,
+ C<pg_advisory_lock>, C<pg_advisory_lock_shared>, C<pg_advisory_lock_shared>
+to get an exclusive or shared lock depending on parameters.
 
-E<get_lock> helper returns a sentinel vairable which holds the lock while it is alive.
+C<get_lock> helper returns a L<Mojolicious::Plugin::PgLock::Sentinel> object which holds
+the lock while it is alive.
 
+=over
+
+=item B<id>
+
+C<id> parameter is used as integer key argument in postgres advisory lock function call.
+Default value for C<id> is CRC32 hash of C<name> parameter.
+
+=item B<name>
+
+C<name> is used for C<id> calculation only if C<id> is not set.
+Default value for C<name> is C<(caller(2))[0]>. It allows to use C<get_helper>
+without parameters in L<Mojolicious::Commands> modules
+
+=item B<shared>
+
+C<shared> parameter chose shared or exclusive lock. Default is false.
+
+=item B<wait>
+
+If C<wait> is true then function will wait until a lock is granted.
+
+=back
 
 =head1 LICENSE
 

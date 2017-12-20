@@ -42,3 +42,11 @@ sub unlock {
 }
 
 1;
+__END__
+
+=encoding utf-8
+
+=head1 NAME
+
+Mojolicious::Plugin::PgLock::Sentinel - postgres advisory lock holder object
+
