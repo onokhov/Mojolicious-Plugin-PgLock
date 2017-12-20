@@ -4,12 +4,14 @@ Mojolicious::Plugin::PgLock - postgres advisory locks for Mojolicious applicatio
 
 # SYNOPSIS
 
+```
   my $pg = Mojo::Pg->new('postgresql://...');
   $app->plugin( PgLock => { pg => $pg } );
 
   if ( my $lock = $app->get_lock ) {
     # make something exclusively
   }
+```
 
 # DESCRIPTION
 
