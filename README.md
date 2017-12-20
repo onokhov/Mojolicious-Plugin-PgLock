@@ -16,11 +16,11 @@ Mojolicious::Plugin::PgLock - postgres advisory locks for Mojolicious applicatio
 # DESCRIPTION
 
 Mojolicious::Plugin::PgLock implements get_lock helper. It is a shugar for
-L<postgres advisory lock functions|https://www.postgresql.org/docs/current/static/functions-admin.html#FUNCTIONS-ADVISORY-LOCKS>.
+[postgres advisory lock functions](https://www.postgresql.org/docs/current/static/functions-admin.html#FUNCTIONS-ADVISORY-LOCKS).
 
 # HELPERS
 
-L<Mojolicious::Plugin::PgLock> implements the following helper.
+Mojolicious::Plugin::PgLock implements the following helper.
 
 ## get_lock
 
@@ -39,7 +39,7 @@ L<Mojolicious::Plugin::PgLock> implements the following helper.
  `pg_advisory_lock`, `pg_advisory_lock_shared`, `pg_advisory_lock_shared`
 to get an exclusive or shared lock depending on parameters.
 
-`get_lock` helper returns a L<Mojolicious::Plugin::PgLock::Sentinel> object which holds
+`get_lock` helper returns a Mojolicious::Plugin::PgLock::Sentinel object which holds
 the lock while it is alive.
 
 ### id
@@ -51,7 +51,7 @@ Default value for `id` is CRC32 hash of `name` parameter.
 
 `name` is used for `id` calculation only if `id` is not set.
 Default value for `name` is ```(caller(2))[0]```. It allows to use `get_helper`
-without parameters in L<Mojolicious::Commands> modules
+without parameters in Mojolicious::Commands modules
 
 ### shared
 
