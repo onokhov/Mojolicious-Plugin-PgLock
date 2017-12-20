@@ -1,12 +1,12 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "postgres advisory locks for Mojolicious application",
    "author" : [
-      "ccn <ccnweb@gmail.com>"
+      "Copyright (C) Alexander Onokhov <onokhov@cpan.org>."
    ],
    "dynamic_config" : 0,
    "generated_by" : "Minilla/v3.0.14, CPAN::Meta::Converter version 2.142060",
    "license" : [
-      "perl_5"
+      "unknown"
    ],
    "meta-spec" : {
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
@@ -47,10 +47,25 @@
       },
       "test" : {
          "requires" : {
+            "Digest::Crc32" : "0",
             "Test::More" : "0.98"
          }
       }
    },
    "release_status" : "unstable",
-   "version" : "0.01"
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/onokhov/Mojolicious-Plugin-PgLock/issues"
+      },
+      "homepage" : "https://github.com/onokhov/Mojolicious-Plugin-PgLock",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/onokhov/Mojolicious-Plugin-PgLock.git",
+         "web" : "https://github.com/onokhov/Mojolicious-Plugin-PgLock"
+      }
+   },
+   "version" : "0.01",
+   "x_contributors" : [
+      "ccn <ccnweb@gmail.com>"
+   ]
 }
